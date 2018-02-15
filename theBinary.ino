@@ -1,5 +1,5 @@
 #include<Wire.h>
-#include"RTClib.h"
+#include"RTClib.h" // by NeiroN
 
 
 const byte CLK = 16;
@@ -17,7 +17,7 @@ byte hp[] = {2, 3, 4, 5};
 byte mp[] = {6, 7, 8, 9, 10, 11};
 byte ap[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
-byte count = 0;
+int count = 0;
 bool mode = true;
 
 DS1302 rtc(CE, CLK, IO);
@@ -54,29 +54,29 @@ void loop () {
 
 void timer(){
   digitalWrite(CE, HIGH);
-  DateTime now = rtc.now();
+  DateTime data = rtc.now();
   digitalWrite(CE, LOW);
-
-  byte h = now.hour();
-  byte m = now.minute();
-
-  for(byte i=0; i<hl; i++){
-    byte state = bitRead(h, i);
-    digitalWrite(hp[i], state);
-    //Serial.print(state);
-  }
-  //Serial.println();
+  TimeDisplay(data);
   
-  for(byte i=0; i<ml; i++){
-    byte state = bitRead(m, i);
-    digitalWrite(mp[i], state);
-    //Serial.print(state);
-  }
-  //Serial.println();
 
-  if(digitalRead(func)){
+  if(digitalRead(func)){        //ustawianie zegara
+    DateTime setData= new DateTime(1514790000);      // godzina default po wejściu w ust. zeg.
+    TimeDisplay(setData);                            // 2018-01-01 07:00:00
+    delay(500);                                      // czas na zauważenie że poszło
+    while(!digitalRead(modeSwitch)){
+      while(digitalRead(func)){
+        setData = DateTime(setData.unixtime() + 60); // zmiana godziny za każdym krokiem.
+        TimeDisplay(setData);
+        delay(150);                                  // czas trwania kroku
+      }
+      delay(10);
+    }
+
+
+
+    
     digitalWrite(CE, HIGH);
-    rtc.adjust(DateTime(1420113600));
+    rtc.adjust(setData);                             //po zakończeniu beczki upload godz do rtc
     digitalWrite(CE, HIGH);
     while(digitalRead(func));
   }
@@ -95,6 +95,29 @@ void timer(){
   Serial.println();*/
 
   delay(1000);
+}
+
+void TimeDisplay(DateTime data){
+  
+  byte h = data.hour();
+  byte m = data.minute();
+
+  if(h>12)h=h-12;
+
+  for(byte i=0; i<hl; i++){
+    byte state = bitRead(h, i);
+    digitalWrite(hp[i], state);
+    //Serial.print(state);
+  }
+  //Serial.println();
+  
+  for(byte i=0; i<ml; i++){
+    byte state = bitRead(m, i);
+    digitalWrite(mp[i], state);
+    //Serial.print(state);
+  }
+  //Serial.println();
+  
 }
 
 void counter(){
