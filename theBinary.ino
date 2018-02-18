@@ -59,26 +59,28 @@ void timer(){
   TimeDisplay(data);
   
 
-  if(digitalRead(func)){        //ustawianie zegara
-    DateTime setData= new DateTime(1514790000);      // godzina default po wejściu w ust. zeg.
-    TimeDisplay(setData);                            // 2018-01-01 07:00:00
-    delay(500);                                      // czas na zauważenie że poszło
-    while(!digitalRead(modeSwitch)){
-      while(digitalRead(func)){
-        setData = DateTime(setData.unixtime() + 60); // zmiana godziny za każdym krokiem.
-        TimeDisplay(setData);
-        delay(150);                                  // czas trwania kroku
+  if(digitalRead(func)){                            //ustawianie zegara
+    delay(2000);
+    if(digitalRead(func)){
+      DateTime setData= new DateTime(1514790000);      // godzina default po wejściu w ust. zeg.
+      TimeDisplay(setData);                            // 2018-01-01 07:00:00
+      delay(500);                                      // czas na zauważenie że poszło
+      while(!digitalRead(modeSwitch)){
+        while(digitalRead(func)){
+          setData = DateTime(setData.unixtime() + 60); // zmiana godziny za każdym krokiem.
+          TimeDisplay(setData);
+          delay(150);                                  // czas trwania kroku
+        }
+        delay(10);
       }
-      delay(10);
-    }
 
 
 
     
-    digitalWrite(CE, HIGH);
-    rtc.adjust(setData);                             //po zakończeniu beczki upload godz do rtc
-    digitalWrite(CE, HIGH);
-    while(digitalRead(func));
+      digitalWrite(CE, HIGH);
+      rtc.adjust(setData);                             //po zakończeniu beczki upload godz do rtc
+      digitalWrite(CE, HIGH);
+    }
   }
   
   /*Serial.print(now.year(), DEC);
