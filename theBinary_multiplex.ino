@@ -5,9 +5,9 @@
 #define hours_s 2
 #define minutes_s 3
 
-int h;
-int m;
-const int refr_rate;
+int h = 0;
+int m = 0;
+const float refr_rate;
 
 DS1302 rtc(CE, CLK, IO);
 
@@ -37,8 +37,8 @@ void multiplex(int h, int m, int t){
 
 void setup(){
     
-    Wire.begin();
-    rtc.begin();
+   	Wire.begin();
+   	rtc.begin();
   
     if (! rtc.isrunning()) {
         rtc.adjust(DateTime(__DATE__, __TIME__)); //get the damn thing up and running
