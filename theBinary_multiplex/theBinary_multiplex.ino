@@ -5,9 +5,13 @@
 #define hours_s 2
 #define minutes_s 3
 
+#define CE 14
+#define IO 15
+#define CLK 16
+
 int h = 0;
 int m = 0;
-const float refr_rate;
+const float refr_rate = 40;
 
 DS1302 rtc(CE, CLK, IO);
 
@@ -39,7 +43,11 @@ void setup(){
     
    	Wire.begin();
    	rtc.begin();
-  
+    DDRB=225;
+    
+    pinMode(hours_s, OUTPUT);
+    pinMode(minutes_s, OUTPUT);
+    
     if (! rtc.isrunning()) {
         rtc.adjust(DateTime(__DATE__, __TIME__)); //get the damn thing up and running
     }
@@ -47,7 +55,9 @@ void setup(){
 }
 
 void loop(){
+    digitalWrite(CE, HIGH);
     DateTime data = rtc.now();
+    digitalWrite(CE, LOW);
     h = data.hour();
     m = data.minute();
     multiplex(h, m, 60); //we only need to recheck after 60 seconds
