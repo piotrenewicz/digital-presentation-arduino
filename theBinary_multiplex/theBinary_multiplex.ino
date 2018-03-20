@@ -2,8 +2,8 @@
 #include"RTClib.h" // by NeiroN
 
 
-#define hours_s 2
-#define minutes_s 3
+#define hours_s 8
+#define minutes_s 9
 
 #define CE 14
 #define IO 15
@@ -11,12 +11,12 @@
 
 int h = 0;
 int m = 0;
-const float refr_rate = 40;
+const float refr_rate = 120;
 
 DS1302 rtc(CE, CLK, IO);
 
 void setDataRail(int n){
-  PORTB=n;
+  PORTD=n;
 }
 
 void setActive(int segment){
@@ -43,7 +43,7 @@ void setup(){
     
    	Wire.begin();
    	rtc.begin();
-    DDRB=225;
+    DDRD=225;
     
     pinMode(hours_s, OUTPUT);
     pinMode(minutes_s, OUTPUT);
@@ -60,6 +60,6 @@ void loop(){
     digitalWrite(CE, LOW);
     h = data.hour();
     m = data.minute();
-    multiplex(h, m, 60); //we only need to recheck after 60 seconds
+    multiplex(h, m, 1);
 }
 
