@@ -47,7 +47,7 @@ void setup(){
 }
 
 void loop(){
-    DateTime data = rtc.now;
+    DateTime data = rtc.now();
     h = data.hour();
     m = data.minute();
     multiplex(h, m, 60); //we only need to recheck after 60 seconds
