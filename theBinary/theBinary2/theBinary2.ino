@@ -39,7 +39,7 @@ void multiplex(int h, int m, int t){
     unsigned long t0 = millis();
     while(millis()-t0<t){
         setActive(hours_s);
-        setDataRail(h);
+        setDataRail(h*4);
         delay(500/refr_rate);
         setActive(minutes_s);
         setDataRail(m);
@@ -105,11 +105,11 @@ void timer(){
 }
 
 void counter(){
-  multiplex(count%16, count/16, 100);
+  multiplex(count/64, count%64, 100);
   if(!digitalRead(func)){
     count++;
     while(!digitalRead(func)){
-      multiplex(count%16, count/16, 1);
+      multiplex(count/64, count%64, 1);
     }
       
   }
